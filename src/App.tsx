@@ -1,25 +1,90 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { ChangeEvent } from 'react';
+import PreviewWindow from './PreviewWindow';
+import { useState } from 'react'
+import './App.css'
+import Editor from './Editor';
 
 function App() {
+
+  const placeholder = `# Demo
+
+  **Author:** BB33
+
+  Powered by react-markdown (with remark and rehype plugins)
+
+  Made as an exercise for the FreeCodeCamp Front-End Development Course. 
+
+  (Below demos the features of the previewer)
+  ## This is a sub-heading...
+  ### And here's some other cool stuff:
+  
+  Heres some code, \`<div></div>\`, between 2 backticks.
+  
+  \`\`\`
+  // this is multi-line code:
+  
+  function anotherExample(firstLine, lastLine) {
+    if (firstLine == '\`\`\`' && lastLine == '\`\`\`') {
+      return multiLineCode;
+    }
+  }
+  \`\`\`
+  
+  You can also make text **bold**... whoa!
+  Or _italic_.
+  Or... wait for it... **_both!_**
+  And feel free to go crazy ~~crossing stuff out~~.
+  
+  There's also [links](https://www.freecodecamp.org), and
+  > Block Quotes!
+  
+  And if you want to get really crazy, even tables:
+  
+  Wild Header | Crazy Header | Another Header?
+  ------------ | ------------- | -------------
+  Your content can | be here, and it | can be here....
+  And here. | Okay. | I think we get it.
+  
+  - And of course there are lists.
+    - Some are bulleted.
+       - With different indentation levels.
+          - That look like this.
+  
+  
+  1. And there are numbered lists too.
+  1. Use just 1s if you want!
+  1. And last but not least, let's not forget embedded images:
+  
+  ![freeCodeCamp Logo](https://cdn.freecodecamp.org/testable-projects-fcc/images/fcc_secondary.svg)
+  `
+  const [input, setInput] = useState(placeholder)
+  const [editorLarge,setEditorLarge] = useState(false)
+  const [editorHidden,setEditorHidden] = useState(false)
+
+  function handleChange(event: ChangeEvent<HTMLTextAreaElement>) {
+    setInput(event.target.value)
+  }
+
+  function toggleEditorSize(){
+    setEditorLarge(!editorLarge)
+  }
+
+  function toggleEditorHidden() {
+    setEditorHidden(!editorHidden)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <div className="my-3 w-full lg:flex flex-col justify-center items-center">
+        <h1 className="text-6xl mb-3">Markdown Previewer</h1>
+        <div className={`mb-10 w-full ${(editorHidden)?'hidden':''} ${(editorLarge)? 'h-screen':'h-48'} lg:w-3/5`}>
+          <Editor input={input} large={editorLarge} handleChange={handleChange} changeSize={toggleEditorSize} />
+        </div>
+        <div className={`my-3 w-full ${(editorLarge)?'hidden':''} lg:w-4/5`}>
+          <PreviewWindow input={input} fullscreen={editorHidden} changeSize={toggleEditorHidden}/>
+        </div>
+
+
+      </div>
   );
 }
 
